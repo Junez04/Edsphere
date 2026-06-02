@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║   SMART CAMPUS INFORMATION SYSTEM — Website Tutorial        ║
+  ║   Teaching: HTML structure + CSS styling + JS logic         ║
+  ╚══════════════════════════════════════════════════════════════╝
+
+  HOW A WEBSITE WORKS:
+  ┌─────────┐    ┌─────────┐    ┌──────────────┐
+  │  HTML   │ +  │   CSS   │ +  │  JavaScript  │
+  │skeleton │    │ clothes │    │    brain     │
+  └─────────┘    └─────────┘    └──────────────╝
+-->
+
+<html lang="en">
+<head>
+  <!-- ══ STEP 1: META TAGS — tell the browser how to behave ══ -->
+  <meta charset="UTF-8">                          <!-- support all characters -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- mobile-friendly -->
+  <title>Smart Campus Information System</title>
+
+  <!-- ══ STEP 2: GOOGLE FONTS — free, professional typography ══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- ══ STEP 3: CSS — all the styling lives here ══ -->
+  <style>
+    /* ── CSS VARIABLES: define your colour palette once, use everywhere ── */
+    :root {
+      --navy:    #0D1B2A;
+      --blue:    #1F4E79;
+      --accent:  #2E86AB;
+      --teal:    #44BBA4;
+      --gold:    #F18F01;
+      --red:     #C73E1D;
+      --light:   #EBF3FB;
+      --white:   #FFFFFF;
+      --text:    #1A2B3C;
+      --muted:   #6B8CAE;
+      --border:  #C8DCEF;
+      --card-bg: #FFFFFF;
+      --sidebar-w: 240px;
+    }
+
+    /* ── CSS RESET: remove browser default styles for consistency ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── BODY: base font + background ── */
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #F0F5FB;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;          /* flexbox = modern layout system */
+    }
+
+    /* ════════════════════════════════════════════
+       SIDEBAR NAVIGATION
+    ════════════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--navy);
+      min-height: 100vh;
+      position: fixed;        /* sticks while page scrolls */
+      top: 0; left: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 24px;
+      z-index: 100;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.25);
+    }
+    .sidebar-logo {
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 12px;
+    }
+    .sidebar-logo h2 {
+      font-family: 'DM Serif Display', serif;
+      color: var(--white);
+      font-size: 16px;
+      line-height: 1.3;
+    }
+    .sidebar-logo span {
+      font-size: 11px;
+      color: var(--teal);
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* NAV LINKS */
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 400;
+      transition: all 0.2s;   /* smooth hover animation */
+      border-left: 3px solid transparent;
+      text-decoration: none;
+      user-select: none;
+    }
+    .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+    .nav-link.active {
+      color: var(--teal);
+      background: rgba(68,187,164,0.1);
+      border-left-color: var(--teal);
+      font-weight: 600;
+    }
+    .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+    .nav-section-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 16px 20px 6px;
+      font-weight: 600;
+    }
+
+    /* ════════════════════════════════════════════
+       MAIN CONTENT AREA
+    ════════════════════════════════════════════ */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      background: var(--white);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h1 { font-size: 20px; font-weight: 600; color: var(--navy); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .badge {
+      background: var(--teal);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .content { padding: 28px 32px; flex: 1; }
+
+    /* PAGE SECTIONS — only the active one is visible */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ════════════════════════════════════════════
+       CARDS — the main UI building block
+    ════════════════════════════════════════════ */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(31,78,121,0.06);
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ════════════════════════════════════════════
+       STAT TILES (dashboard)
+    ════════════════════════════════════════════ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-tile {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(31,78,121,0.06);
+    }
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 32px; font-weight: 700; color: var(--navy); margin: 6px 0 2px; font-family: 'DM Serif Display', serif; }
+    .stat-sub { font-size: 12px; color: var(--muted); }
+    .stat-icon { font-size: 24px; float: right; margin-top: -2px; }
+
+    /* ════════════════════════════════════════════
+       FORMS — for registration & enrollment
+    ════════════════════════════════════════════ */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }  /* span both columns */
+    label { font-size: 13px; font-weight: 500; color: var(--blue); }
+    input, select, textarea {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    input::placeholder { color: #AAC0D5; }
+
+    /* ════════════════════════════════════════════
+       BUTTONS
+    ════════════════════════════════════════════ */
+    .btn {
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary { background: var(--blue); color: white; }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(31,78,121,0.3); }
+    .btn-teal { background: var(--teal); color: white; }
+    .btn-teal:hover { background: #37a891; transform: translateY(-1px); }
+    .btn-gold { background: var(--gold); color: white; }
+    .btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+    /* ════════════════════════════════════════════
+       TABLES — for displaying student data
+    ════════════════════════════════════════════ */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead th {
+      background: var(--navy);
+      color: rgba(255,255,255,0.85);
+      padding: 11px 14px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    thead th:first-child { border-radius: 8px 0 0 0; }
+    thead th:last-child  { border-radius: 0 8px 0 0; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:hover { background: var(--light); }
+    tbody td { padding: 11px 14px; color: var(--text); }
+
+    /* ════════════════════════════════════════════
+       GRADE + STATUS BADGES
+    ════════════════════════════════════════════ */
+    .grade-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .grade-O  { background:#D4EDDA; color:#155724; }
+    .grade-Ap { background:#CCE5FF; color:#004085; }
+    .grade-A  { background:#D1ECF1; color:#0C5460; }
+    .grade-Bp { background:#FFF3CD; color:#856404; }
+    .grade-B  { background:#FEF3E2; color:#9C5700; }
+    .grade-C  { background:#F3D9FA; color:#6B2177; }
+    .grade-F  { background:#F8D7DA; color:#721C24; }
+    .status-pass { background:#D4EDDA; color:#155724; padding:2px 9px; border-radius:6px; font-size:12px; font-weight:600; }
+    .status-fail { background:#F8D7DA; color:#721C24; padding:2px 9px; border-radius:6px; font-size:12px; font-weight:600; }
+
+    /* ════════════════════════════════════════════
+       SEARCH BAR
+    ════════════════════════════════════════════ */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .search-bar input { flex: 1; }
+
+    /* ════════════════════════════════════════════
+       ANALYTICS BARS (visual charts in pure CSS!)
+    ════════════════════════════════════════════ */
+    .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; }
+    .bar-label { font-size: 13px; width: 120px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track { flex: 1; height: 24px; background: var(--light); border-radius: 6px; overflow: hidden; position: relative; }
+    .bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      transition: width 1s cubic-bezier(0.4,0,0.2,1);  /* animated bar growth */
+    }
+
+    /* ════════════════════════════════════════════
+       TOASTS / NOTIFICATIONS
+    ════════════════════════════════════════════ */
+    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: white;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+    }
+    .toast.success { background: var(--teal); }
+    .toast.error   { background: var(--red); }
+    .toast.info    { background: var(--blue); }
+    @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* ════════════════════════════════════════════
+       FEE CALCULATOR SPECIFIC
+    ════════════════════════════════════════════ */
+    .fee-breakdown {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+      border-radius: 12px;
+      padding: 24px;
+      color: white;
+    }
+    .fee-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; }
+    .fee-row:last-child { border-bottom: none; }
+    .fee-row.total { font-size: 18px; font-weight: 700; border-top: 2px solid rgba(255,255,255,0.3); margin-top: 8px; padding-top: 12px; }
+    .fee-row .label { color: rgba(255,255,255,0.7); }
+    .fee-row .amount { color: var(--teal); font-weight: 600; }
+    .fee-row.total .amount { color: white; font-size: 22px; }
+
+    /* ════════════════════════════════════════════
+       COURSE TAGS
+    ════════════════════════════════════════════ */
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--light);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--blue);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .course-tag:hover { background: var(--accent); color: white; border-color: var(--accent); }
+    .course-tag.selected { background: var(--blue); color: white; border-color: var(--blue); }
+    .course-tag.selected:hover { background: var(--red); border-color: var(--red); }
+
+    /* RESPONSIVE for smaller screens */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .analytics-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     HTML STRUCTURE — this is the "skeleton" of the page
+════════════════════════════════════════════════════════════ -->
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h2>🎓 Smart Campus</h2>
+    <span>Information System</span>
+  </div>
+
+  <div class="nav-section-label">Main</div>
+  <div class="nav-link active" onclick="showPage('dashboard', this)">
+    <span class="nav-icon">📊</span> Dashboard
+  </div>
+  <div class="nav-link" onclick="showPage('register', this)">
+    <span class="nav-icon">📝</span> Register Student
+  </div>
+  <div class="nav-link" onclick="showPage('enroll', this)">
+    <span class="nav-icon">📚</span> Course Enrollment
+  </div>
+
+  <div class="nav-section-label">Data</div>
+  <div class="nav-link" onclick="showPage('records', this)">
+    <span class="nav-icon">🗂️</span> Student Records
+  </div>
+  <div class="nav-link" onclick="showPage('fee', this)">
+    <span class="nav-icon">💰</span> Fee Calculator
+  </div>
+  <div class="nav-link" onclick="showPage('analytics', this)">
+    <span class="nav-icon">📈</span> Analytics
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <h1 id="page-title">Dashboard</h1>
+    <div class="topbar-right">
+      <span id="student-count-badge" class="badge">0 Students</span>
+      <span style="font-size:13px;color:var(--muted)">AY 2025–26</span>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════════════════
+         PAGE 1: DASHBOARD
+    ══════════════════════════════════════════ -->
+    <section class="page active" id="page-dashboard">
+
+      <!-- Stat tiles — numbers update via JavaScript -->
+      <div class="stats-grid">
+        <div class="stat-tile">
+          <div class="stat-label">Total Students <span class="stat-icon">👥</span></div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-sub">Registered this session</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Passing <span class="stat-icon">✅</span></div>
+          <div class="stat-value" id="stat-pass" style="color:var(--teal)">0</div>
+          <div class="stat-sub">Average ≥ 40 marks</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Class Average <span class="stat-icon">📐</span></div>
+          <div class="stat-value" id="stat-avg" style="color:var(--blue)">—</div>
+          <div class="stat-sub">Mean marks across all students</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Top CGPA <span class="stat-icon">🏆</span></div>
+          <div class="stat-value" id="stat-topcgpa" style="color:var(--gold)">—</div>
+          <div class="stat-sub" id="stat-topper">No data yet</div>
+        </div>
+      </div>
+
+      <!-- Recent students table -->
+      <div class="card">
+        <div class="card-title">📋 Recent Registrations</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Name</th><th>Dept</th><th>Avg Marks</th><th>CGPA</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-table">
+              <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No students registered yet. Go to Register Student →</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         PAGE 2: REGISTER STUDENT
+    ══════════════════════════════════════════ -->
+    <section class="page" id="page-register">
+      <div class="card">
+        <div class="card-title">📝 New Student Registration</div>
+        <!--
+          FORM TUTORIAL:
+          - <input type="text"> for text
+          - <input type="number"> for numbers
+          - <select> for dropdown
+          - All inputs have an id="" so JavaScript can grab their values
+        -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="reg-id">Student ID *</label>
+            <input type="text" id="reg-id" placeholder="e.g. S007">
+          </div>
+          <div class="form-group">
+            <label for="reg-name">Full Name *</label>
+            <input type="text" id="reg-name" placeholder="e.g. Arjun Sharma">
+          </div>
+          <div class="form-group">
+            <label for="reg-dept">Department *</label>
+            <select id="reg-dept">
+              <option value="">-- Select --</option>
+              <option>CSE</option>
+              <option>BIO</option>
+              <option>ECE</option>
+              <option>MECH</option>
+              <option>CIVIL</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reg-sem">Semester</label>
+            <select id="reg-sem">
+              <option>1</option><option>2</option><option>3</option>
+              <option>4</option><option>5</option><option>6</option>
+              <option>7</option><option>8</option>
+            </select>
+          </div>
+          <!-- 5 subject marks — each is a number input -->
+          <div class="form-group full">
+            <label>Subject Marks (5 subjects, 0–100) *</label>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+              <input type="number" id="m1" placeholder="Sub 1" min="0" max="100">
+              <input type="number" id="m2" placeholder="Sub 2" min="0" max="100">
+              <input type="number" id="m3" placeholder="Sub 3" min="0" max="100">
+              <input type="number" id="m4" placeholder="Sub 4" min="0" max="100">
+              <input type="number" id="m5" placeholder="Sub 5" min="0" max="100">
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="registerStudent()">✅ Register Student</button>
+          <button class="btn btn-ghost" onclick="clearRegForm()">🔄 Clear</button>
+        </div>
+      </div>
+
+      <!-- Live grade preview — updates as you type -->
+      <div class="card" id="grade-preview" style="display:none">
+        <div class="card-title">📊 Grade Preview</div>
+        <div id="grade-preview-content"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         PAGE 3: COURSE ENROLLMENT
+    ══════════════════════════════════════════ -->
+    <section class="page" id="page-enroll">
+      <div class="card">
+        <div class="card-title">📚 Course Enrollment Management</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="enroll-id">Student ID</label>
+            <select id="enroll-id" onchange="loadStudentEnrollment()">
+              <option value="">-- Select Student --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Available Courses (click to toggle)</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:4px" id="course-tags">
+              <!-- Tags are injected by JavaScript -->
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <button class="btn btn-teal" onclick="enrollStudent()">📌 Save Enrollment</button>
+        </div>
+      </div>
+
+      <div class="card" id="enrollment-display" style="display:none">
+        <div class="card-title">📋 Current Enrollment</div>
+        <div id="enrollment-list"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         PAGE 4: STUDENT RECORDS + SEARCH + SORT
+    ══════════════════════════════════════════ -->
+    <section class="page" id="page-records">
+      <div class="card">
+        <div class="card-title">🗂️ Student Records</div>
+
+        <!-- SEARCH + SORT controls -->
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="🔍 Linear search by name..." oninput="searchStudents()">
+          <button class="btn btn-ghost btn-sm" onclick="sortBy('avg')">Sort by Avg ↓</button>
+          <button class="btn btn-ghost btn-sm" onclick="sortBy('cgpa')">Sort by CGPA ↓</button>
+          <button class="btn btn-ghost btn-sm" onclick="sortBy('id')">Sort by ID</button>
+          <button class="btn btn-gold btn-sm" onclick="showPage('register', document.querySelector('.nav-link:nth-child(3)'))">+ Add Student</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Name</th><th>Dept</th><th>Sem</th>
+                <th>Marks</th><th>Avg</th><th>CGPA</th><th>Grades</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="records-table">
+              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">No records yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted)" id="records-count"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         PAGE 5: FEE CALCULATOR
+    ══════════════════════════════════════════ -->
+    <section class="page" id="page-fee">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="card">
+          <div class="card-title">💰 Fee Calculator</div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label for="fee-id">Select Student</label>
+            <select id="fee-id">
+              <option value="">-- Select --</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label><input type="checkbox" id="fee-hostel" style="width:auto;margin-right:6px"> Include Hostel (₹8,000)</label>
+          </div>
+          <div class="form-group" style="margin-bottom:20px">
+            <label><input type="checkbox" id="fee-transport" style="width:auto;margin-right:6px"> Include Transport (₹3,000)</label>
+          </div>
+          <button class="btn btn-primary" onclick="calculateFee()">💳 Calculate Fee</button>
+        </div>
+
+        <div class="fee-breakdown" id="fee-result" style="display:none">
+          <div style="font-size:16px;font-weight:700;margin-bottom:16px;font-family:'DM Serif Display',serif">Fee Breakdown</div>
+          <div id="fee-rows"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         PAGE 6: ANALYTICS (CSS bar charts)
+    ══════════════════════════════════════════ -->
+    <section class="page" id="page-analytics">
+      <div class="stats-grid">
+        <div class="stat-tile">
+          <div class="stat-label">Mean Marks</div>
+          <div class="stat-value" id="an-mean" style="color:var(--blue)">—</div>
+          <div class="stat-sub">NumPy: np.mean()</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Std Deviation</div>
+          <div class="stat-value" id="an-std" style="color:var(--gold)">—</div>
+          <div class="stat-sub">NumPy: np.std()</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Median Marks</div>
+          <div class="stat-value" id="an-median" style="color:var(--teal)">—</div>
+          <div class="stat-sub">NumPy: np.median()</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-label">Pass Rate</div>
+          <div class="stat-value" id="an-passrate" style="color:var(--teal)">—</div>
+          <div class="stat-sub">Students with avg ≥ 40</div>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <div class="card">
+          <div class="card-title">📊 Average Marks per Student</div>
+          <div class="bar-chart" id="chart-avg"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🎓 CGPA per Student</div>
+          <div class="bar-chart" id="chart-cgpa"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🏫 Department Performance</div>
+          <div class="bar-chart" id="chart-dept"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">✅ Grade Distribution</div>
+          <div class="bar-chart" id="chart-grade"></div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</main>
+
+<!-- TOAST CONTAINER for notifications -->
+<div id="toast-container"></div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT — this is the "brain" that makes everything work
+     All the Python logic from smart_campus.py is rewritten here
+════════════════════════════════════════════════════════════ -->
+<script>
+// ══════════════════════════════════════════════
+//  DATA STORE  (equivalent to Python lists/dicts)
+// ══════════════════════════════════════════════
+
+let students = [];      // list of student objects
+let enrollmentMap = {}; // { studentId: [courseCode, ...] }
+
+const COURSES = {
+  CS101: { name: "Intro to Programming",       credits: 4, fee: 8000 },
+  BT201: { name: "Biotechnology Fundamentals", credits: 4, fee: 9000 },
+  MA101: { name: "Engineering Mathematics",    credits: 3, fee: 6000 },
+  PH101: { name: "Applied Physics",            credits: 3, fee: 6500 },
+  EC301: { name: "Electronics & Circuits",     credits: 4, fee: 8500 },
+};
+
+const GRADE_SCALE = [
+  [90,"O",10],[80,"A+",9],[70,"A",8],
+  [60,"B+",7],[50,"B",6],[40,"C",5],[0,"F",0]
+];
+
+// Grade badge CSS class map
+const GRADE_CLASS = { "O":"grade-O","A+":"grade-Ap","A":"grade-A","B+":"grade-Bp","B":"grade-B","C":"grade-C","F":"grade-F" };
+
+// ══════════════════════════════════════════════
+//  NAVIGATION — show/hide pages
+// ══════════════════════════════════════════════
+
+const PAGE_TITLES = {
+  dashboard: "Dashboard",
+  register:  "Register Student",
+  enroll:    "Course Enrollment",
+  records:   "Student Records",
+  fee:       "Fee Calculator",
+  analytics: "Analytics"
+};
+
+function showPage(pageId, navEl) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show chosen page
+  document.getElementById('page-' + pageId).classList.add('active');
+  // Update nav highlight
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  // Update top bar title
+  document.getElementById('page-title').textContent = PAGE_TITLES[pageId];
+  // Refresh content for data-driven pages
+  if (pageId === 'dashboard')  renderDashboard();
+  if (pageId === 'records')    renderRecords(students);
+  if (pageId === 'analytics')  renderAnalytics();
+  if (pageId === 'enroll')     setupEnrollPage();
+  if (pageId === 'fee')        populateFeeSelect();
+}
+
+// ══════════════════════════════════════════════
+//  GRADE LOGIC  (same as Python assign_grade())
+// ══════════════════════════════════════════════
+
+function assignGrade(marks) {
+  for (const [threshold, letter, point] of GRADE_SCALE) {
+    if (marks >= threshold) return { letter, point };
+  }
+  return { letter: "F", point: 0 };
+}
+
+// ══════════════════════════════════════════════
+//  REGISTER STUDENT
+// ══════════════════════════════════════════════
+
+function registerStudent() {
+  // Read form values — document.getElementById() grabs an element by its id
+  const id   = document.getElementById('reg-id').value.trim().toUpperCase();
+  const name = document.getElementById('reg-name').value.trim();
+  const dept = document.getElementById('reg-dept').value;
+  const sem  = document.getElementById('reg-sem').value;
+
+  // Collect marks from 5 inputs
+  const markInputs = ['m1','m2','m3','m4','m5'];
+  const marks = markInputs.map(mid => parseInt(document.getElementById(mid).value));
+
+  // ── VALIDATION (conditional statements) ──────
+  if (!id || !name || !dept) { toast("Please fill in all required fields.", "error"); return; }
+  if (students.find(s => s.id === id)) { toast(`ID "${id}" already exists!`, "error"); return; }
+  if (marks.some(m => isNaN(m) || m < 0 || m > 100)) { toast("Enter valid marks (0–100) for all subjects.", "error"); return; }
+
+  // ── GRADE EVALUATION (loop through marks) ────
+  const grades = marks.map(m => ({ marks: m, ...assignGrade(m) }));
+  const avg    = marks.reduce((a, b) => a + b, 0) / marks.length;
+  const cgpa   = grades.reduce((a, g) => a + g.point, 0) / grades.length;
+  const status = avg >= 40 ? "Pass" : "Fail";
+
+  // ── BUILD STUDENT OBJECT (like a Python dict) ──
+  const student = { id, name, dept, semester: sem, marks, grades,
+                    avg: +avg.toFixed(2), cgpa: +cgpa.toFixed(2), status };
+
+  students.push(student);       // add to our list
+  enrollmentMap[id] = [];       // empty enrollment
+
+  toast(`✅ ${name} registered successfully! CGPA: ${student.cgpa}`, "success");
+  clearRegForm();
+  updateBadge();
+  renderGradePreview(student);
+}
+
+function clearRegForm() {
+  ['reg-id','reg-name','m1','m2','m3','m4','m5'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('reg-dept').value = '';
+  document.getElementById('grade-preview').style.display = 'none';
+}
+
+function renderGradePreview(s) {
+  const div = document.getElementById('grade-preview');
+  div.style.display = 'block';
+  const html = `
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+      ${s.grades.map((g,i) => `
+        <div style="text-align:center;padding:12px 16px;background:var(--light);border-radius:10px">
+          <div style="font-size:11px;color:var(--muted)">Subject ${i+1}</div>
+          <div style="font-size:20px;font-weight:700;color:var(--navy)">${g.marks}</div>
+          <span class="grade-badge ${GRADE_CLASS[g.letter]}">${g.letter}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="display:flex;gap:20px;font-size:14px">
+      <div>Average: <strong>${s.avg}</strong></div>
+      <div>CGPA: <strong style="color:var(--blue)">${s.cgpa} / 10</strong></div>
+      <div>Status: <span class="${s.status==='Pass'?'status-pass':'status-fail'}">${s.status}</span></div>
+    </div>
+  `;
+  document.getElementById('grade-preview-content').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════
+//  COURSE ENROLLMENT
+// ══════════════════════════════════════════════
+
+function setupEnrollPage() {
+  // Populate student dropdown
+  const sel = document.getElementById('enroll-id');
+  sel.innerHTML = '<option value="">-- Select Student --</option>';
+  students.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = `${s.id} — ${s.name}`;
+    sel.appendChild(opt);
+  });
+  // Render course tags
+  const tagsDiv = document.getElementById('course-tags');
+  tagsDiv.innerHTML = '';
+  Object.entries(COURSES).forEach(([code, info]) => {
+    const tag = document.createElement('div');
+    tag.className = 'course-tag';
+    tag.id = 'tag-' + code;
+    tag.textContent = `${code}: ${info.name.split(' ').slice(0,2).join(' ')} (₹${info.fee.toLocaleString()})`;
+    tag.onclick = () => tag.classList.toggle('selected');
+    tagsDiv.appendChild(tag);
+  });
+}
+
+function loadStudentEnrollment() {
+  const sid = document.getElementById('enroll-id').value;
+  if (!sid) return;
+  // Highlight already enrolled courses
+  Object.keys(COURSES).forEach(code => {
+    const tag = document.getElementById('tag-' + code);
+    if (tag) tag.classList.toggle('selected', (enrollmentMap[sid] || []).includes(code));
+  });
+  renderEnrollmentDisplay(sid);
+}
+
+function enrollStudent() {
+  const sid = document.getElementById('enroll-id').value;
+  if (!sid) { toast("Please select a student.", "error"); return; }
+  const selected = Object.keys(COURSES).filter(code => {
+    const tag = document.getElementById('tag-' + code);
+    return tag && tag.classList.contains('selected');
+  });
+  enrollmentMap[sid] = selected;
+  toast(`📌 Enrollment saved: ${selected.length} courses for ${sid}`, "success");
+  renderEnrollmentDisplay(sid);
+}
+
+function renderEnrollmentDisplay(sid) {
+  const div = document.getElementById('enrollment-display');
+  const list = document.getElementById('enrollment-list');
+  const enrolled = enrollmentMap[sid] || [];
+  if (!enrolled.length) { div.style.display = 'none'; return; }
+  div.style.display = 'block';
+  const totalFee = enrolled.reduce((a, c) => a + (COURSES[c]?.fee || 0), 0);
+  const totalCredits = enrolled.reduce((a, c) => a + (COURSES[c]?.credits || 0), 0);
+  list.innerHTML = `
+    <table>
+      <thead><tr><th>Code</th><th>Course Name</th><th>Credits</th><th>Fee (₹)</th></tr></thead>
+      <tbody>
+        ${enrolled.map(c => `
+          <tr>
+            <td><strong>${c}</strong></td>
+            <td>${COURSES[c].name}</td>
+            <td>${COURSES[c].credits}</td>
+            <td>₹${COURSES[c].fee.toLocaleString()}</td>
+          </tr>
+        `).join('')}
+        <tr style="background:var(--light);font-weight:600">
+          <td colspan="2">Total</td><td>${totalCredits} credits</td><td>₹${totalFee.toLocaleString()}</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+}
+
+// ══════════════════════════════════════════════
+//  SORTING ALGORITHMS
+// ══════════════════════════════════════════════
+
+function bubbleSortByAvg(arr) {
+  const a = [...arr];  // copy (don't mutate original)
+  for (let i = 0; i < a.length - 1; i++) {
+    for (let j = 0; j < a.length - 1 - i; j++) {
+      if (a[j].avg < a[j+1].avg) {
+        [a[j], a[j+1]] = [a[j+1], a[j]];  // ES6 destructuring swap
+      }
+    }
+  }
+  return a;
+}
+
+function selectionSortByCgpa(arr) {
+  const a = [...arr];
+  for (let i = 0; i < a.length; i++) {
+    let maxIdx = i;
+    for (let j = i+1; j < a.length; j++) {
+      if (a[j].cgpa > a[maxIdx].cgpa) maxIdx = j;
+    }
+    [a[i], a[maxIdx]] = [a[maxIdx], a[i]];
+  }
+  return a;
+}
+
+function sortBy(field) {
+  let sorted;
+  if (field === 'avg')  sorted = bubbleSortByAvg(students);
+  else if (field === 'cgpa') sorted = selectionSortByCgpa(students);
+  else sorted = [...students].sort((a,b) => a.id.localeCompare(b.id));
+  toast(`Sorted by ${field.toUpperCase()} using ${field==='avg'?'Bubble Sort':field==='cgpa'?'Selection Sort':'ID'}`, "info");
+  renderRecords(sorted);
+}
+
+// ══════════════════════════════════════════════
+//  SEARCHING
+// ══════════════════════════════════════════════
+
+// Linear search — scans every element
+function linearSearchByName(query) {
+  query = query.toLowerCase();
+  return students.filter(s => s.name.toLowerCase().includes(query));
+}
+
+// Binary search — only works on sorted-by-id array
+function binarySearchById(sortedArr, targetId) {
+  let low = 0, high = sortedArr.length - 1;
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    if (sortedArr[mid].id === targetId) return sortedArr[mid];
+    else if (sortedArr[mid].id < targetId) low = mid + 1;
+    else high = mid - 1;
+  }
+  return null;
+}
+
+function searchStudents() {
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) { renderRecords(students); return; }
+  const result = linearSearchByName(q);
+  renderRecords(result);
+  document.getElementById('records-count').textContent =
+    `Linear Search: found ${result.length} of ${students.length} students`;
+}
+
+// ══════════════════════════════════════════════
+//  RENDER RECORDS TABLE
+// ══════════════════════════════════════════════
+
+function renderRecords(data) {
+  const tbody = document.getElementById('records-table');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">No records found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(s => `
+    <tr>
+      <td><strong>${s.id}</strong></td>
+      <td>${s.name}</td>
+      <td>${s.dept}</td>
+      <td>${s.semester}</td>
+      <td style="font-size:12px">${s.marks.join(', ')}</td>
+      <td><strong>${s.avg}</strong></td>
+      <td style="color:var(--blue);font-weight:600">${s.cgpa}</td>
+      <td>${s.grades.map(g => `<span class="grade-badge ${GRADE_CLASS[g.letter]}" style="margin:1px">${g.letter}</span>`).join(' ')}</td>
+      <td><span class="${s.status==='Pass'?'status-pass':'status-fail'}">${s.status}</span></td>
+    </tr>
+  `).join('');
+  document.getElementById('records-count').textContent = `Showing ${data.length} student(s)`;
+}
+
+// ══════════════════════════════════════════════
+//  DASHBOARD RENDER
+// ══════════════════════════════════════════════
+
+function renderDashboard() {
+  const n    = students.length;
+  const pass = students.filter(s => s.status === 'Pass').length;
+  const avg  = n ? (students.reduce((a,s) => a + s.avg, 0) / n).toFixed(1) : '—';
+  const top  = n ? students.reduce((a,b) => b.cgpa > a.cgpa ? b : a) : null;
+
+  document.getElementById('stat-total').textContent = n;
+  document.getElementById('stat-pass').textContent  = pass;
+  document.getElementById('stat-avg').textContent   = avg;
+  document.getElementById('stat-topcgpa').textContent = top ? top.cgpa : '—';
+  document.getElementById('stat-topper').textContent  = top ? top.name : 'No data yet';
+
+  // Render 5 most recent
+  const tbody = document.getElementById('dashboard-table');
+  const recent = [...students].slice(-5).reverse();
+  if (!recent.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No students registered yet. Go to Register Student →</td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(s => `
+    <tr>
+      <td><strong>${s.id}</strong></td>
+      <td>${s.name}</td>
+      <td>${s.dept}</td>
+      <td>${s.avg}</td>
+      <td style="color:var(--blue);font-weight:600">${s.cgpa}</td>
+      <td><span class="${s.status==='Pass'?'status-pass':'status-fail'}">${s.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+//  FEE CALCULATOR
+// ══════════════════════════════════════════════
+
+function populateFeeSelect() {
+  const sel = document.getElementById('fee-id');
+  sel.innerHTML = '<option value="">-- Select --</option>';
+  students.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.id; o.textContent = `${s.id} — ${s.name}`;
+    sel.appendChild(o);
+  });
+}
+
+function calculateFee() {
+  const sid       = document.getElementById('fee-id').value;
+  const hostel    = document.getElementById('fee-hostel').checked;
+  const transport = document.getElementById('fee-transport').checked;
+  if (!sid) { toast("Please select a student.", "error"); return; }
+
+  const s          = students.find(st => st.id === sid);
+  const BASE       = 15000;
+  const courseFee  = (enrollmentMap[sid] || []).reduce((a, c) => a + (COURSES[c]?.fee || 0), 0);
+  const hostelFee  = hostel ? 8000 : 0;
+  const transFee   = transport ? 3000 : 0;
+  const subtotal   = BASE + courseFee + hostelFee + transFee;
+  const scholarship = s.cgpa >= 8 ? Math.round(subtotal * 0.20) : 0;
+  const net        = subtotal - scholarship;
+
+  const rows = [
+    ["Base Tuition Fee", BASE],
+    ["Course Fee", courseFee],
+    ["Hostel Fee", hostelFee],
+    ["Transport Fee", transFee],
+    ["Scholarship (20%)", -scholarship],
+  ];
+
+  const div = document.getElementById('fee-result');
+  div.style.display = 'block';
+  document.getElementById('fee-rows').innerHTML = `
+    ${rows.filter(r => r[1] !== 0).map(([label, amt]) => `
+      <div class="fee-row">
+        <span class="label">${label}</span>
+        <span class="amount">${amt < 0 ? '−' : ''}₹${Math.abs(amt).toLocaleString()}</span>
+      </div>
+    `).join('')}
+    <div class="fee-row total">
+      <span>NET PAYABLE</span>
+      <span class="amount">₹${net.toLocaleString()}</span>
+    </div>
+    <div style="margin-top:12px;font-size:12px;opacity:0.6">
+      ${s.cgpa >= 8 ? '⭐ Merit scholarship applied (CGPA ≥ 8.0)' : 'CGPA below 8.0 — no scholarship'}
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════
+//  ANALYTICS  (CSS bar charts + stats)
+// ══════════════════════════════════════════════
+
+function renderAnalytics() {
+  if (!students.length) {
+    ['an-mean','an-std','an-median','an-passrate'].forEach(id => document.getElementById(id).textContent = '—');
+    ['chart-avg','chart-cgpa','chart-dept','chart-grade'].forEach(id => {
+      document.getElementById(id).innerHTML = '<p style="color:var(--muted);font-size:13px">No data yet.</p>';
+    });
+    return;
+  }
+
+  const avgs  = students.map(s => s.avg);
+  const cgpas = students.map(s => s.cgpa);
+
+  // ── Stats (simulating NumPy functions) ────────
+  const mean   = avgs.reduce((a,b)=>a+b,0)/avgs.length;
+  const sorted = [...avgs].sort((a,b)=>a-b);
+  const median = sorted.length%2===0
+    ? (sorted[sorted.length/2-1]+sorted[sorted.length/2])/2
+    : sorted[Math.floor(sorted.length/2)];
+  const std = Math.sqrt(avgs.reduce((a,b)=>a+Math.pow(b-mean,2),0)/avgs.length);
+  const passRate = Math.round(avgs.filter(a=>a>=40).length/avgs.length*100);
+
+  document.getElementById('an-mean').textContent   = mean.toFixed(1);
+  document.getElementById('an-std').textContent    = std.toFixed(1);
+  document.getElementById('an-median').textContent = median.toFixed(1);
+  document.getElementById('an-passrate').textContent = passRate + '%';
+
+  // ── Bar charts ────────────────────────────────
+  const maxAvg  = Math.max(...avgs, 1);
+  const maxCgpa = 10;
+
+  drawBars('chart-avg', students.map(s => ({
+    label: s.name.split(' ')[0],
+    value: s.avg,
+    max: maxAvg,
+    color: s.status==='Pass' ? 'var(--teal)' : 'var(--red)',
+    display: s.avg
+  })));
+
+  drawBars('chart-cgpa', students.map(s => ({
+    label: s.name.split(' ')[0],
+    value: s.cgpa,
+    max: maxCgpa,
+    color: 'var(--blue)',
+    display: s.cgpa
+  })));
+
+  // Department averages (Pandas groupby equivalent)
+  const depts = {};
+  students.forEach(s => {
+    if (!depts[s.dept]) depts[s.dept] = [];
+    depts[s.dept].push(s.avg);
+  });
+  const deptAvgs = Object.entries(depts).map(([dept, vals]) => ({
+    label: dept,
+    value: vals.reduce((a,b)=>a+b,0)/vals.length,
+    max: 100,
+    color: 'var(--accent)',
+    display: (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1)
+  }));
+  drawBars('chart-dept', deptAvgs);
+
+  // Grade distribution
+  const gradeCounts = {};
+  students.forEach(s => s.grades.forEach(g => {
+    gradeCounts[g.letter] = (gradeCounts[g.letter]||0) + 1;
+  }));
+  const gradeColors = {"O":"#1D6A40","A+":"#004085","A":"#0C5460","B+":"#856404","B":"#9C5700","C":"#6B2177","F":"#721C24"};
+  const maxGrade = Math.max(...Object.values(gradeCounts), 1);
+  drawBars('chart-grade', Object.entries(gradeCounts).map(([g, cnt]) => ({
+    label: g, value: cnt, max: maxGrade, color: gradeColors[g]||'var(--muted)', display: cnt
+  })));
+}
+
+function drawBars(containerId, data) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = data.map(d => `
+    <div class="bar-row">
+      <div class="bar-label" title="${d.label}">${d.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(d.value/d.max*100).toFixed(1)}%;background:${d.color}">
+          ${d.display}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+//  TOAST NOTIFICATIONS
+// ══════════════════════════════════════════════
+
+function toast(msg, type='info') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ══════════════════════════════════════════════
+//  BADGE UPDATE
+// ══════════════════════════════════════════════
+
+function updateBadge() {
+  document.getElementById('student-count-badge').textContent = students.length + ' Student' + (students.length!==1?'s':'');
+}
+
+// ══════════════════════════════════════════════
+//  PRELOAD DEMO DATA — so you can see it working
+// ══════════════════════════════════════════════
+
+(function loadDemo() {
+  const demo = [
+    {id:"S001",name:"Arjun Sharma",   dept:"CSE",semester:"3",marks:[85,78,92,88,76]},
+    {id:"S002",name:"Priya Nair",     dept:"BIO",semester:"2",marks:[91,95,88,97,90]},
+    {id:"S003",name:"Rahul Mehta",    dept:"ECE",semester:"4",marks:[55,62,48,70,58]},
+    {id:"S004",name:"Sneha Pillai",   dept:"CSE",semester:"1",marks:[33,45,28,50,38]},
+    {id:"S005",name:"Kiran Desai",    dept:"BIO",semester:"3",marks:[74,80,71,68,83]},
+    {id:"S006",name:"Ananya Iyer",    dept:"ECE",semester:"2",marks:[88,92,85,90,94]},
+  ];
+  const enrollData = {
+    S001:["CS101","MA101","PH101"],
+    S002:["BT201","MA101","CS101"],
+    S003:["EC301","MA101","CS101"],
+    S004:["CS101","MA101"],
+    S005:["BT201","PH101","EC301"],
+    S006:["EC301","CS101","MA101","BT201"],
+  };
+  demo.forEach(d => {
+    const grades = d.marks.map(m => ({ marks:m, ...assignGrade(m) }));
+    const avg    = d.marks.reduce((a,b)=>a+b,0)/d.marks.length;
+    const cgpa   = grades.reduce((a,g)=>a+g.point,0)/grades.length;
+    students.push({ ...d, grades, avg:+avg.toFixed(2), cgpa:+cgpa.toFixed(2), status: avg>=40?'Pass':'Fail' });
+    enrollmentMap[d.id] = enrollData[d.id] || [];
+  });
+  updateBadge();
+  renderDashboard();
+})();
+</script>
+</body>
+</html>
